@@ -1,0 +1,34 @@
+version: "3"
+
+services:
+  rustdesk-hbbs:
+    restart: unless-stopped
+    network_mode: host
+    privileged: true
+    logging:
+      options:
+        max-size: "10m"
+        max-file: "3"
+    image: rustdesk/rustdesk-server
+    volumes:
+      - ./data:/root
+    command: hbbs -k _
+
+  rustdesk-hbbr:
+    restart: unless-stopped
+    network_mode: host
+    privileged: true
+    logging:
+      options:
+        max-size: "10m"
+        max-file: "3"
+    image: rustdesk/rustdesk-server
+    depends_on:
+      - rustdesk-hbbs
+    environment:
+      LIMIT_SPEED: 1024
+      TOTAL_BANDWIDTH: 1024
+      SINGLE_BANDWIDTH: 1024
+    volumes:
+      - ./data:/root
+    command: hbbr -k _
