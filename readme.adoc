@@ -1,0 +1,47 @@
+
+= rustdesk
+
+. hbbs RustDesk ID/Rendezvous server
+.. 21115 (tcp)
+
+    hbbs NAT 类型测试
+
+.. 21116 (tcp/udp)
+
+    UDP 是 hbbs 用作 ID注册与心跳服务，
+    TCP 是 hbbs 用作 TCP打洞与连接服务
+
+.. 21118 (tcp)
+
+    网页客户端
+
+. hbbr RustDesk relay server
+.. 21117 (tcp)
+
+    hbbr 用作中继服务
+
+.. 21119 (tcp)
+
+    网页客户端
+
+== firewall
+
+[source,shell]
+----
+firewall-cmd --zone=public --add-port=21115/tcp --permanent
+
+firewall-cmd --zone=public --add-port=21116/tcp --permanent
+firewall-cmd --zone=public --add-port=21116/udp --permanent
+
+# firewall-cmd --zone=public --add-port=21118/tcp --permanent
+
+firewall-cmd --zone=public --add-port=21117/tcp --permanent
+# firewall-cmd --zone=public --add-port=21119/tcp --permanent
+
+firewall-cmd --reload
+
+rustdesk_html=~/program/nginx/html/rustdesk
+mkdir -p "$rustdesk_html"
+ln ~/program/rustdesk/data/id_ed25519.pub "$rustdesk_html/index.html"
+
+----
